@@ -1,14 +1,14 @@
 # Fuga de clientes (I parete: Desarrollo del modelo)
 
-La fuga de clientes es una de las principales problematicas que puede tener una empresa, tema que debe ser tratado con suma atención ya que ganar un cliente es 7 veces más dificil que retenerlo. \
+La fuga de clientes es una de las principales problemáticas que puede tener una empresa, tema que debe ser tratado con suma atención ya que ganar un cliente es 7 veces más difícil que retenerlo.\
 \
-En este repositorio encontraran el desarrollo metodologico para identificar, a través de Machine Learning, aquellos clientes más propensos a fugarse en el proximo mes, en particular:
+En este repositorio encontraran el desarrollo metodológico para identificar, a través de Machine Learning, aquellos clientes más propensos a fugarse en el próximo mes (información relevante para realizar retención), en particular:
 
-* Se utilizó el modelo RandomForest, un metodología que se basa en árboles de decisiones. 
+* Se utilizó el modelo RandomForest, una metodología que se basa en árboles de decisiones.
 * Se construyó una base de datos con 1000 registros y una tasa de fuga del 15%.
-* Los datos se construyeron a partir de supuestos plausibles sobre el comportamiento de los clientes en los 12 meses anteriores al mes de referencia, condicionado sobre si se fugaría o no el proximo mes.
-* Las variables historicas para los clientes que se fugaban seguían una distribución beta decreciente y los que no una distribución normal, en ambos casos se agregó ruido a través de una distribución uniforme.
-* Las variables que se construyeron fueron: total de la compra mensual, nivel de satisfacción, tiempo de espera, diversidad de la canasta, antiguedad del cliente, tipo de cliente.
+* Los datos se construyeron a partir de supuestos plausibles sobre el comportamiento de los clientes en los 12 meses anteriores al mes de referencia, condicionado sobre si se fugará o no el próximo mes.
+* Las variables históricas para los clientes que se fugaban seguían una distribución beta decreciente y los que no una distribución normal, en ambos casos se agregó ruido a través de una distribución uniforme.
+* Las variables que se construyeron fueron: total de la compra mensual, nivel de satisfacción, tiempo de espera, diversidad de la canasta, antigüedad del cliente, tipo de cliente.
 * El modelo fue construido a través de una muestra de construcción, validado mediante cross-validation y testeado en una muestra out of sample.
 * El desempeño del modelo fue estimado a través de indicadores como el ginni y accuracy.
 
