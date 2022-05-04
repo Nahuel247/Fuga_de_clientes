@@ -104,7 +104,7 @@ data_monto_melt=pd.melt(data_monto,id_vars='ID')
 
 sns.set(style='darkgrid',context='paper',font_scale=1.2,palette='colorblind')
 
-
+a4_dims = (50, 8.27)
 fig1=sns.lineplot(data=data_monto_melt, x="variable", y="value", hue="ID")
 fig1.invert_xaxis()
 fig1.set(title='Monto de la compra en los últimos 12 meses para los clientes que se fugan')
@@ -115,7 +115,6 @@ data_monto=data.query("fuga == 0")[['ID','monto_1', 'monto_2', 'monto_3', 'monto
        'monto_12']][0:3].copy()
 data_monto["ID"]=range(data_monto.shape[0])
 data_monto_melt=pd.melt(data_monto,id_vars='ID')
-
 
 
 fig2=sns.lineplot(data=data_monto_melt, x="variable", y="value", hue="ID")

@@ -131,8 +131,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Definimos los párametros para el modelo
 parametros=({
         "criterion":"entropy",
-        "max_depth":None,
-        "max_features":"auto",
+        "max_depth":3,
+        "max_features":0.8,
         "oob_score": False,
         "n_jobs":-1,
         "random_state":123})
@@ -142,10 +142,10 @@ estimator_range = range(1, 150, 5)
 train_scores, cv_scores=modelo_cv(X_train,y_train,estimator_range,parametros)
 
 # Gráfico para visualizar el ajuste del modelo y el número de árboles optimos (n_estimators)
-Grafico_ajuste(estimator_range,train_scores,cv_scores)
+grafico_ajuste(estimator_range,train_scores,cv_scores)
 
 modelo = RandomForestClassifier(
-            n_estimators = 12, # para obtener resultados realistas, se le da un valor diferente al recomendado
+            n_estimators = 6, # para obtener resultados realistas, se le da un valor diferente al recomendado
             **parametros)
 
 # Entrenamiento del modelo
