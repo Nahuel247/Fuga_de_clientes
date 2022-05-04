@@ -1,0 +1,17 @@
+
+###################
+#   REFERENCIA
+###################
+
+#Teoría:
+# https://www.cienciadedatos.net/documentos/py08_random_forest_python.html
+# https://scikit-learn.org/stable/modules/cross_validation.html
+# https://www.kaggle.com/code/batzner/gini-coefficient-an-intuitive-explanation/notebook
+
+
+#Fuga de clientes:
+#https://www.questionpro.com/blog/es/fuga-de-clientes/
+#https://findialeyva.com/tasas-de-abandono-y-fuga-de-clientes/
+#http://repobib.ubiobio.cl/jspui/bitstream/123456789/2308/1/Ovalle_Retamal_Victor_Francisco_Javier.pdf
+#http://opac.pucv.cl/pucv_txt/txt-0000/UCF0318_01.pdf
+#https://hexa-soluciones.es/reduccion-de-fuga-de-clientes-analisis/
