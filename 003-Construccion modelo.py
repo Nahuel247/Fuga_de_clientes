@@ -32,14 +32,6 @@ warnings.filterwarnings('once')
 # CREAMOS LAS FUNCIONES QUE VAMOS A UTILIZAR
 #############################################
 
-# Construiremos una función que defina el comportamiento historico del cliente según si su marca de fuga es 0 o 1
-
-# Rezagos: Número de meses anteriores al mes de referencia con información, 1 es el mes más cercano y 12 es el más lejano
-# Valor_max: Es el valor máx alcanzado por la variable historica que se desea construir
-
-# Si el cliente se va a fugar, se construyen variables hisoticas a partir de una función beta decreciente
-# Si el cliente no se va a fugar, se construyen variables historicas a partir de una función normal
-
 # CONSTRUIMOS UNA FUNCIÓN PARA ESTIMAR EL NÚMERO DE ARBOLES OPTIMOS POR MEDIO DE CROSS VALIDATION
 def modelo_cv(X_train,y_train,estimator_range,parametros):
     train_scores = []
