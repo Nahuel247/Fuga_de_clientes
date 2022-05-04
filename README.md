@@ -1,4 +1,4 @@
-# Fuga de clientes (I parete: Desarrollo del modelo)
+# Fuga de clientes (I parte: Desarrollo del modelo)
 
 La fuga de clientes es una de las principales problemáticas que puede tener una empresa, tema que debe ser tratado con suma atención ya que ganar un cliente es 7 veces más difícil que retenerlo.\
 \
