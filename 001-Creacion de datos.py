@@ -42,7 +42,7 @@ def tendencia(x, rezagos,valor_max):
     noise = np.random.uniform(-1, 1, rezagos)  # Se utilizará para agregar ruido
     if x==1: # Distribución beta (el cliente se fuga, "fuga" ==1)
         a, b, inicio, fin = 10, 2, 0.1, 0.99  # párametros de la distribución beta
-        x = np.linspace(beta.ppf(inicio, a, b), beta.ppf(fin, a, b), 12)
+        x = np.linspace(beta.ppf(inicio, a, b), beta.ppf(fin, a, b), rezagos)
         x_valores = beta.pdf(x, a, b)
         x_valores= (x_valores/np.max(x_valores)) * valor_max * rand(1)
         x_valores = x_valores + (x_valores * noise)
