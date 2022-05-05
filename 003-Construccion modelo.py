@@ -32,7 +32,9 @@ warnings.filterwarnings('once')
 # CREAMOS LAS FUNCIONES QUE VAMOS A UTILIZAR
 #############################################
 
-# CONSTRUIMOS UNA FUNCIÓN PARA ESTIMAR EL NÚMERO DE ARBOLES OPTIMOS POR MEDIO DE CROSS VALIDATION
+# CONSTRUIMOS UNA FUNCIÓN PARA ESTIMAR EL DESEMPEÑO DEL MODELO A TRAVÉS DE CROSS VALIDATION Y
+# EL NÚMERO DE ARBOLES OPTIMOS
+
 def modelo_cv(X_train,y_train,estimator_range,parametros):
     train_scores = []
     cv_scores = []
@@ -79,9 +81,7 @@ def grafico_ajuste(estimator_range,train_scores,cv_scores):
 # SE CREA UNA FUNCIÓN PARA EVALUAR DISTINTOS INDICADORES
 def tablas_eficiencia(y_test,predicciones):
     mat_confusion = confusion_matrix(y_true=y_test,y_pred=predicciones)
-
-    accuracy = accuracy_score(
-        y_true=y_test,y_pred=predicciones,normalize=True)
+    accuracy = accuracy_score(y_true=y_test,y_pred=predicciones,normalize=True)
 
     print("Matriz de confusión")
     print("-------------------")
@@ -92,6 +92,7 @@ def tablas_eficiencia(y_test,predicciones):
     print(classification_report(
             y_true=y_test,
             y_pred=predicciones))
+
 
 # SE CONSTRUYE LA FUNCIÓN DE GINI
 def gini_generico(actual, pred):
@@ -117,8 +118,7 @@ def gini(actual, pred):
 X_train, X_test, y_train, y_test = train_test_split(
                                         data_artificial.drop(columns = "fuga"),
                                         data_artificial["fuga"],
-                                        random_state = 123
-                                    )
+                                        random_state = 123)
 
 # Definimos los párametros para el modelo
 parametros=({

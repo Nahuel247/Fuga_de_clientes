@@ -37,14 +37,16 @@ warnings.filterwarnings('once')
 #######################################
 
 # Construimos una base de datos que entrará en el modelo
-data_artificial=data[["fuga"]]
+data_artificial=data[["fuga","antiguedad","grande","pequeno"]]
 
-# truquito para crear las variables de forma aútomatica
+
+# Truquito para crear las variables de forma aútomatica: A continuación se crean de forma automatica la programación
+# de múltiples variables, están quedan guardads en el objeto "variables" y pueden ser ejecutadas con exec o impresas
+# para dejarlas explicitas
+
 list_var=["monto_","satisfaccion_","canasta_","espera_"]
 meses=[12,6,3]
 funciones=["sum","mean","max","min"]
-
-#guardamos en "variables" las variables creadas, al imprimirlo se puede ver el listado de variables creadas
 variables=[("data_artificial=data_artificial.assign("+var+funcion+str(n_meses)+"=data[['"+var+"' +str(i+1) for i in range("+str(n_meses)+")]]."+funcion+"(axis=1))") for var in list_var for n_meses in meses for funcion in funciones]
 
 # ejecutamos las funciones
@@ -109,3 +111,13 @@ data_artificial=data_artificial.assign(espera_sum3=data[['espera_' +str(i+1) for
 data_artificial=data_artificial.assign(espera_mean3=data[['espera_' +str(i+1) for i in range(3)]].mean(axis=1))
 data_artificial=data_artificial.assign(espera_max3=data[['espera_' +str(i+1) for i in range(3)]].max(axis=1))
 data_artificial=data_artificial.assign(espera_min3=data[['espera_' +str(i+1) for i in range(3)]].min(axis=1))
+
+
+# Dimensiones de data_artificial
+data_artificial.shape
+
+# Nombre de las columnas
+data_artificial.columns
+
+
+# Se observa que se han creado 51 variables artificiales
