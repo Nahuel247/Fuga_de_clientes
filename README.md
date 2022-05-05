@@ -1,6 +1,6 @@
 # Fuga de clientes (I parte: Desarrollo del modelo)
 
-La fuga de clientes es una de las principales problemáticas que puede tener una empresa, tema que debe ser tratado con suma atención ya que ganar un cliente es 7 veces más difícil que retenerlo.\
+La fuga de clientes es una de las principales problemáticas que puede enfrentar una empresa, tema que debe ser tratado con suma atención ya que ganar un cliente es 7 veces más difícil que retenerlo.\
 \
 En este repositorio encontraran el desarrollo metodológico para identificar, a través de Machine Learning, aquellos clientes más propensos a fugarse en el próximo mes (información relevante para realizar retención), en particular:
 
