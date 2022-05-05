@@ -44,16 +44,17 @@ warnings.filterwarnings('once')
 # Si el cliente se va a fugar, se construyen variables hisoticas a partir de una función beta decreciente
 # Si el cliente no se va a fugar, se construyen variables historicas a partir de una función normal
 
+# Creamos una función que defina la tendencia que tomará la variable historica según si el cliente se fuga o no
 def tendencia(x, rezagos,valor_max):
     ds=valor_max/100# ds
     noise = np.random.uniform(-1, 1, rezagos)  # Se utilizará para agregar ruido
-    if x==1: # Distribución beta
+    if x==1: # Distribución beta (el cliente se fuga, "fuga" ==1)
         a, b, inicio, fin = 10, 2, 0.1, 0.99  # párametros de la distribución beta
         x = np.linspace(beta.ppf(inicio, a, b), beta.ppf(fin, a, b), 12)
         x_valores = beta.pdf(x, a, b)
         x_valores= (x_valores/np.max(x_valores)) * valor_max * rand(1)
         x_valores = x_valores + (x_valores * noise)
-    else: # Distribución normal
+    else: # Distribución normal (el cliente NO se fuga, "fuga" ==0)
         x_valores = np.random.normal(valor_max*rand(1), ds * rand(1), rezagos)
         x_valores = x_valores + (x_valores * noise)
         x_valores = (x_valores/np.max(x_valores)) * valor_max * rand(1)
@@ -61,6 +62,9 @@ def tendencia(x, rezagos,valor_max):
 
 
 # CONSTRUIMOS UNA FUNCIÓN PARA ESTIMAR EL NÚMERO DE ARBOLES OPTIMOS POR MEDIO DE CROSS VALIDATION
+# CONSTRUIMOS UNA FUNCIÓN PARA ESTIMAR EL DESEMPEÑO DEL MODELO A TRAVÉS DE CROSS VALIDATION Y
+# EL NÚMERO DE ARBOLES OPTIMOS
+
 def modelo_cv(X_train,y_train,estimator_range,parametros):
     train_scores = []
     cv_scores = []
@@ -108,8 +112,7 @@ def grafico_ajuste(estimator_range,train_scores,cv_scores):
 def tablas_eficiencia(y_test,predicciones):
     mat_confusion = confusion_matrix(y_true=y_test,y_pred=predicciones)
 
-    accuracy = accuracy_score(
-        y_true=y_test,y_pred=predicciones,normalize=True)
+    accuracy = accuracy_score(y_true=y_test,y_pred=predicciones,normalize=True)
 
     print("Matriz de confusión")
     print("-------------------")
@@ -186,9 +189,13 @@ data=data.assign(pequeno= lambda x: (x.grande==0) * 1)
 #######################################
 
 # Construimos una base de datos que entrará en el modelo
-data_artificial=data[["fuga"]]
+data_artificial=data[["fuga","antiguedad","grande","pequeno"]]
 
 # truquito para crear las variables de forma aútomatica
+# Truquito para crear las variables de forma aútomatica: A continuación se crean de forma automatica la programación
+# de múltiples variables, están quedan guardads en el objeto "variables" y pueden ser ejecutadas con exec o impresas
+# para dejarlas explicitas
+
 list_var=["monto_","satisfaccion_","canasta_","espera_"]
 meses=[12,6,3]
 funciones=["sum","mean","max","min"]
@@ -275,7 +282,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 parametros=({
         "criterion":"entropy",
         "max_depth":3,
-        "max_features":1,
+        "max_features":0.8,
         "oob_score": False,
         "n_jobs":-1,
         "random_state":123})
