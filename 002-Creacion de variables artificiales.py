@@ -14,20 +14,6 @@
 # IMPORTAMOS LAS LIBRERIAS DE INTERÉS
 ########################################
 
-import numpy as np
-import pandas as pd
-import uuid
-import random
-from scipy.stats import beta
-from numpy.random import rand
-import matplotlib.pyplot as plt
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import classification_report
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import train_test_split
 import warnings
 warnings.filterwarnings('once')
 
