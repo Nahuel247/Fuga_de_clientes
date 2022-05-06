@@ -33,13 +33,16 @@ data_artificial=data[["fuga","antiguedad","grande","pequeno"]]
 list_var=["monto_","satisfaccion_","canasta_","espera_"]
 meses=[12,6,3]
 funciones=["sum","mean","max","min"]
-variables=[("data_artificial=data_artificial.assign("+var+funcion+str(n_meses)+"=data[['"+var+"' +str(i+1) for i in range("+str(n_meses)+")]]."+funcion+"(axis=1))") for var in list_var for n_meses in meses for funcion in funciones]
+variables=[("data_artificial=data_artificial.assign("+var+funcion+str(n_meses)+"=data[['"+var+
+            "' +str(i+1) for i in range("+str(n_meses)+")]]."+funcion+"(axis=1))")
+           for var in list_var for n_meses in meses for funcion in funciones]
 
 # ejecutamos las funciones
 #for var in variables:
 #    exec(var)
 
 # dejamos explicitas las funciones creadas
+print(variables)
 
 # monto total, max, min, promedio de los últimos 12, 6 y 3 meses para cada cliente
 data_artificial=data_artificial.assign(monto_sum12=data[['monto_' +str(i+1) for i in range(12)]].sum(axis=1))
