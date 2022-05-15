@@ -14,11 +14,18 @@ En este repositorio encontraran el desarrollo metodológico para identificar, a 
 
 #Algunos resultados
 
-# Comportamiento de compra de los clientes que no se fugan
-[![Monto-total-de-la-compra-clientes-que-NO-se-fugan.png](https://i.postimg.cc/yxpcTksh/Monto-total-de-la-compra-clientes-que-NO-se-fugan.png)](https://postimg.cc/4HtYf4Kn)
+# Distribución beta decreciente (tendencia para clientes que se fugan)
+[![Distribuci-n-beta.png](https://i.postimg.cc/ZRgTXy5B/Distribuci-n-beta.png)](https://postimg.cc/R675Hhf4)
+
+# Distribución normal (tendencia para clientes que no se fugan)
+[![Distribuci-n-normal.png](https://i.postimg.cc/T2Lm1Vms/Distribuci-n-normal.png)](https://postimg.cc/3WhWbDtj)
 
 # Comportamiento de compra de los clientes que se fugan 
-[![Monto-total-de-la-compra-clientes-que-se-fugan.png](https://i.postimg.cc/nV34xwBs/Monto-total-de-la-compra-clientes-que-se-fugan.png)](https://postimg.cc/w3syc2WH)
+[![Monto-total-de-la-compra-clientes-que-se-fugan.png](https://i.postimg.cc/YSDGq0Sk/Monto-total-de-la-compra-clientes-que-se-fugan.png)](https://postimg.cc/jWNdMsNk)
+
+# Comportamiento de compra de los clientes que no se fugan
+[![Monto-total-de-la-compra-clientes-que-NO-se-fugan.png](https://i.postimg.cc/g2DLQNFx/Monto-total-de-la-compra-clientes-que-NO-se-fugan.png)](https://postimg.cc/LJJsZksS)
+
 
 # Cross validation
 [![cross-validation.png](https://i.postimg.cc/GpfRrKMk/cross-validation.png)](https://postimg.cc/kVWzvQP4)
