@@ -17,6 +17,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+np.random.seed(123)
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
