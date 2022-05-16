@@ -23,6 +23,9 @@ import warnings
 import seaborn as sns
 warnings.filterwarnings('once')
 
+seed=123
+np.random.seed(seed) # fijamos la semilla
+random.seed(seed)
 
 #############################################
 # CREAMOS LAS FUNCIONES QUE VAMOS A UTILIZAR
@@ -37,20 +40,32 @@ warnings.filterwarnings('once')
 # Si el cliente no se va a fugar, se construyen variables historicas a partir de una función normal
 
 # Creamos una función que defina la tendencia que tomará la variable historica según si el cliente se fuga o no
-def tendencia(x, rezagos,valor_max):
-    ds=valor_max/100# ds
-    noise = np.random.uniform(-1, 1, rezagos)  # Se utilizará para agregar ruido
+def tendencia(x, rezagos,valor_max,ruido):
+    ds=valor_max/10# ds
+    azar=rand(1)
+    if ruido==1:
+        noise = np.random.uniform(-1, 1, rezagos)  # Se utilizará para agregar ruido
+    else:
+        noise =0
     if x==1: # Distribución beta (el cliente se fuga, "fuga" ==1)
         a, b, inicio, fin = 10, 2, 0.1, 0.99  # párametros de la distribución beta
         x = np.linspace(beta.ppf(inicio, a, b), beta.ppf(fin, a, b), rezagos)
         x_valores = beta.pdf(x, a, b)
-        x_valores= (x_valores/np.max(x_valores)) * valor_max * rand(1)
         x_valores = x_valores + (x_valores * noise)
+        x_valores= (x_valores/np.max(x_valores)) * valor_max * azar
     else: # Distribución normal (el cliente NO se fuga, "fuga" ==0)
-        x_valores = np.random.normal(valor_max*rand(1), ds * rand(1), rezagos)
+        x_valores = np.random.normal(valor_max*azar, ds * azar, rezagos)
         x_valores = x_valores + (x_valores * noise)
-        x_valores = (x_valores/np.max(x_valores)) * valor_max * rand(1)
+        x_valores = (x_valores/np.max(x_valores)) * valor_max * azar
     return pd.Series(x_valores)
+
+def registros_malos(porcentaje,n):
+    n_ones=round((porcentaje/100)*n)
+    ones = list(np.ones(n_ones))
+    zeros=list(np.zeros(n-n_ones))
+    vector=list(zeros + ones)
+    return vector
+
 
 ###########################################################################
 # CREAMOS LA BASE DE DATOS SEGÚN TENDENCIAS PLAUSIBLES ASOCIADAS A LA FUGA
@@ -60,28 +75,30 @@ n=1000 # Número de clientes/registros que se van a crear
 rezagos=12 # Número de meses anteriores al mes de referencia para los cuales se crearán variables
 
 #Inicializamos un dataframe con los ID de cada cliente
-data=pd.DataFrame({"ID": [uuid.uuid4() for _ in range(n)]})
+#data=pd.DataFrame({"ID": [uuid.uuid4() for _ in range(n)]})
+data=pd.DataFrame({"ID": list(range(n))})
 
 # Agregamos una tasa de fuga del 15% (FUGA: 1: NO compra el siguiente mes, 0: SI lo hace)
-data=data.assign(fuga=random.choices([1,0], cum_weights=(15,85),k = n))
+vector=registros_malos(15,n)
+data=data.assign(fuga=random.sample(vector,n))
 
 # Monto mensual de compras de cada cliente
-data_monto=data["fuga"].apply(tendencia,args=(rezagos, 50000))
+data_monto=data["fuga"].apply(tendencia,args=(rezagos, 50000,1))
 data_monto.columns=np.array(["monto_"+str(i+1) for i in range(rezagos)])
 data=pd.concat([data,data_monto],axis=1)
 
 # Indicador mensual de satisfacción de cada cliente
-data_satisfaccion=data["fuga"].apply(tendencia,args=(rezagos, 7))
+data_satisfaccion=data["fuga"].apply(tendencia,args=(rezagos, 7,1))
 data_satisfaccion.columns=np.array(["satisfaccion_"+str(i+1) for i in range(rezagos)])
 data=pd.concat([data,data_satisfaccion],axis=1)
 
 # Número de productos mensuales distintos en la canasta de cada cliente
-data_canasta = data["fuga"].apply(tendencia, args=(rezagos, 15))
+data_canasta = data["fuga"].apply(tendencia, args=(rezagos, 15,1))
 data_canasta.columns = np.array(["canasta_" + str(i + 1) for i in range(rezagos)])
 data = pd.concat([data, data_canasta], axis=1)
 
 # Número de dias entre la solicitud del pedido y la entrega para cada cliente
-data_espera = data["fuga"].apply(tendencia, args=(rezagos, 20))
+data_espera = data["fuga"].apply(tendencia, args=(rezagos, 20,1))
 data_espera.columns = np.array(["espera_" + str(i+1) for i in reversed(range(rezagos))])
 data = pd.concat([data, data_espera], axis=1)
 
@@ -97,27 +114,53 @@ data=data.assign(pequeno= lambda x: (x.grande==0) * 1)
 # VISUALIZAMOS ALGUNOS CASOS
 ##############################
 
-sns.set(style='darkgrid',context='paper',font_scale=1.2,palette='colorblind')
+def visualizamos(variable, fuga, valor_max,seed):
+    salida = []
+    for i in [1, 0]:  # noise o no
+        n = 0
+        np.random.seed(seed)
+        for j in [fuga]:  # se fuga==1, o no fuga==0
+            for k in range(5):  # registros
+                print(i, j, k)
+                y = tendencia(j, rezagos, valor_max, i)
+                ID = [str(n)] * rezagos
+                x = np.array(["Rezago" + str(i + 1) for i in range(rezagos)])
+                ruido = [i] * rezagos
+                data = pd.DataFrame({"ID": ID, "variable": x, "valor": y, "fuga": j, "ruido": ruido})
+                salida.append(data)
+                n += 1
 
-data_monto1=data.query("fuga == 1")[['ID','monto_1', 'monto_2', 'monto_3', 'monto_4', 'monto_5',
-       'monto_6', 'monto_7', 'monto_8', 'monto_9', 'monto_10', 'monto_11',
-       'monto_12']][0:3].copy()
-data_monto1["ID"]=range(data_monto1.shape[0])
-data_monto_melt1=pd.melt(data_monto1,id_vars='ID')
+    salida = pd.concat(salida)
+    salida = salida.reset_index()
 
+    fig, axes = plt.subplots(2, 1)
+    fig1=sns.lineplot(data=salida.query("ruido==0"), x="variable", y="valor", hue="ID", ax=axes[0])
+    fig1.legend(loc='upper right')
+    fig2=sns.lineplot(data=salida.query("ruido==1"), x="variable", y="valor", hue="ID", ax=axes[1])
+    fig2.legend(loc='upper right')
+    fig1.set_xlabel(""),fig1.set_ylabel(variable+" sin ruido"),fig2.set_xlabel(""),fig2.set_ylabel(variable+" con ruido")
+    plt.suptitle("Variación histórica: "+ variable)
+    axes[0].invert_xaxis()
+    axes[1].invert_xaxis()
 
-fig1=sns.lineplot(data=data_monto_melt1, x="variable", y="value", hue="ID")
-fig1.invert_xaxis()
-fig1.set(title='Monto de la compra en los últimos 12 meses para los clientes que se fugan')
+#Distribución beta decreciente
+visualizamos("Distribución beta", 1, 1,123)
 
+#Distribución normal
+visualizamos("Distribución normal", 0, 1,123)
 
-data_monto2=data.query("fuga == 0")[['ID','monto_1', 'monto_2', 'monto_3', 'monto_4', 'monto_5',
-       'monto_6', 'monto_7', 'monto_8', 'monto_9', 'monto_10', 'monto_11',
-       'monto_12']][0:3].copy()
-data_monto2["ID"]=range(data_monto2.shape[0])
-data_monto_melt2=pd.melt(data_monto2,id_vars='ID')
+# Consumo
+visualizamos("Consumo", 1, 50000,123)
+visualizamos("Consumo", 0, 50000,123)
 
+# Satisfacción
+visualizamos("satisfacción", 1, 7,124)
+visualizamos("satisfacción", 0, 7,124)
 
-fig2=sns.lineplot(data=data_monto_melt2, x="variable", y="value", hue="ID")
-fig2.invert_xaxis()
-fig2.set(title='Monto de la compra en los últimos 12 meses para los clientes que NO se fugan')
+# Canasta
+visualizamos("canasta", 1,15,125)
+visualizamos("canasta", 0,15,125)
+
+# Tiempo de espera
+visualizamos("espera", 1, 20,126)
+visualizamos("espera", 0, 20,126)
