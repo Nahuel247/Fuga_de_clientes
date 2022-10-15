@@ -25,6 +25,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split
+from tabulate import tabulate
 import warnings
 warnings.filterwarnings('once')
 
@@ -59,7 +60,7 @@ def modelo_cv(X_train,y_train,estimator_range,parametros):
             X=X_train,
             y=y_train,
             #scoring='neg_root_mean_squared_error', # para variable continua
-            scoring='accuracy',# para (2) variables categoricas
+            scoring='recall',# para (2) variables categoricas
             cv=5)
         cv_scores.append(scores.mean())
     return train_scores, cv_scores
@@ -79,8 +80,9 @@ def grafico_ajuste(estimator_range,train_scores,cv_scores):
     print(f"Valor óptimo de n_estimators: {estimator_range[np.argmax(cv_scores)]}")
 
 
+
 # SE CREA UNA FUNCIÓN PARA EVALUAR DISTINTOS INDICADORES
-def tablas_eficiencia(y_test,predicciones):
+def metricas_eficiencia(y_test,predicciones):
     mat_confusion = confusion_matrix(y_true=y_test,y_pred=predicciones)
     accuracy = accuracy_score(y_true=y_test,y_pred=predicciones,normalize=True)
 
@@ -111,6 +113,19 @@ def gini(actual, pred):
     return gini_generico(actual, pred) / gini_generico(actual, actual)
 
 
+def tabla_eficiencia(var_exp,var_resp,n_tramos):
+    bins = list(
+        sorted(set(np.quantile(var_exp.copy(), np.arange(0, 1 + (1 / n_tramos), 1 / n_tramos), overwrite_input=True))))
+    bins[len(bins)-1]=1
+    labels = [f'{round(i, 3)}-{round(j, 3)}' for i, j in zip(bins[:-1], bins[1:])]  # creamos etiquetas
+    categorias = pd.cut(var_exp, bins=bins, labels=labels, include_lowest=True, right=True)
+    df = pd.DataFrame({'var_exp': var_exp, 'rangos_prob': categorias, 'var_resp': var_resp})
+    # agrupamos para conocer la tasa de incumplimiento según tramo
+    df_group = df.groupby('rangos_prob').agg(n=('rangos_prob', len), n_malos=('var_resp', sum),
+                                            tasa_malo=('var_resp', np.mean)).reset_index()
+    print(tabulate(df_group, headers=df_group.columns))
+    return df_group
+
 ##########################################
 # CONSTRUIMOS EL MODELO
 ##########################################
@@ -138,7 +153,7 @@ train_scores, cv_scores=modelo_cv(X_train,y_train,estimator_range,parametros)
 grafico_ajuste(estimator_range,train_scores,cv_scores)
 
 modelo = RandomForestClassifier(
-            n_estimators = 6, # para obtener resultados realistas, se le da un valor diferente al recomendado
+            n_estimators = 120,
             **parametros)
 
 # Entrenamiento del modelo
@@ -152,8 +167,12 @@ predicciones = modelo.predict(X = X_test)
 #   DESEMPEÑO
 #################
 
-tablas_eficiencia(y_test,predicciones)
+metricas_eficiencia(y_test,predicciones)
 
 predicciones_prob = pd.DataFrame(modelo.predict_proba(X = X_test))[1]
 gini(y_test,predicciones_prob)
 
+var_exp=predicciones_prob
+var_resp=y_test.reset_index().copy().fuga
+
+tabla_eficiencia(var_exp,var_resp,10)
