@@ -22,6 +22,7 @@ from numpy.random import rand
 import warnings
 import seaborn as sns
 warnings.filterwarnings('once')
+import matplotlib.pyplot as plt
 
 seed=123
 np.random.seed(seed) # fijamos la semilla
@@ -31,24 +32,25 @@ random.seed(seed)
 # CREAMOS LAS FUNCIONES QUE VAMOS A UTILIZAR
 #############################################
 
-# Construiremos una función que defina el comportamiento historico del cliente según si su marca de fuga es 0 o 1
+# Construiremos una función que defina el comportamiento histórico del cliente según, si su marca de fuga es 0 o 1
 
 # Rezagos: Número de meses anteriores al mes de referencia con información, 1 es el mes más cercano y 12 es el más lejano
-# Valor_max: Es el valor máx alcanzado por la variable historica que se desea construir
+# Valor_max: Es el valor máx alcanzado por la variable histórica que se desea construir
 
-# Si el cliente se va a fugar, se construyen variables hisoticas a partir de una función beta decreciente
-# Si el cliente no se va a fugar, se construyen variables historicas a partir de una función normal
+# Si el cliente se va a fugar, se construyen variables históricas a partir de una función beta decreciente
+# Si el cliente no se va a fugar, se construyen variables históricas a partir de una función normal
 
-# Creamos una función que defina la tendencia que tomará la variable historica según si el cliente se fuga o no
+# Creamos una función que defina la tendencia que tomará la variable histórica según si el cliente se fuga o no
 def tendencia(x, rezagos,valor_max,ruido):
     ds=valor_max/10# ds
     azar=rand(1)
     if ruido==1:
-        noise = np.random.uniform(-1, 1, rezagos)  # Se utilizará para agregar ruido
+        noise = np.random.uniform(-0.3, 0.3, rezagos)  # Se utilizará para agregar ruido
     else:
         noise =0
     if x==1: # Distribución beta (el cliente se fuga, "fuga" ==1)
-        a, b, inicio, fin = 10, 2, 0.1, 0.99  # párametros de la distribución beta
+        #a, b, inicio, fin = 10, 2, 0.1, 0.99  # párametros de la distribución beta
+        a, b, inicio, fin = 5, 2, 0.1, 0.99  # párametros de la distribución beta
         x = np.linspace(beta.ppf(inicio, a, b), beta.ppf(fin, a, b), rezagos)
         x_valores = beta.pdf(x, a, b)
         x_valores = x_valores + (x_valores * noise)
@@ -88,12 +90,12 @@ data_monto.columns=np.array(["monto_"+str(i+1) for i in range(rezagos)])
 data=pd.concat([data,data_monto],axis=1)
 
 # Indicador mensual de satisfacción de cada cliente
-data_satisfaccion=data["fuga"].apply(tendencia,args=(rezagos, 7,1))
+data_satisfaccion=data["fuga"].apply(tendencia,args=(rezagos, 100,1))
 data_satisfaccion.columns=np.array(["satisfaccion_"+str(i+1) for i in range(rezagos)])
 data=pd.concat([data,data_satisfaccion],axis=1)
 
 # Número de productos mensuales distintos en la canasta de cada cliente
-data_canasta = data["fuga"].apply(tendencia, args=(rezagos, 15,1))
+data_canasta = data["fuga"].apply(tendencia, args=(rezagos, 200,1))
 data_canasta.columns = np.array(["canasta_" + str(i + 1) for i in range(rezagos)])
 data = pd.concat([data, data_canasta], axis=1)
 
@@ -142,6 +144,7 @@ def visualizamos(variable, fuga, valor_max,seed):
     plt.suptitle("Variación histórica: "+ variable)
     axes[0].invert_xaxis()
     axes[1].invert_xaxis()
+    plt.show()
 
 #Distribución beta decreciente
 visualizamos("Distribución beta", 1, 1,123)
@@ -154,12 +157,12 @@ visualizamos("Consumo", 1, 50000,123)
 visualizamos("Consumo", 0, 50000,123)
 
 # Satisfacción
-visualizamos("satisfacción", 1, 7,124)
-visualizamos("satisfacción", 0, 7,124)
+visualizamos("satisfacción", 1, 100,124)
+visualizamos("satisfacción", 0, 100,124)
 
 # Canasta
-visualizamos("canasta", 1,15,125)
-visualizamos("canasta", 0,15,125)
+visualizamos("canasta", 1,200,125)
+visualizamos("canasta", 0,200,125)
 
 # Tiempo de espera
 visualizamos("espera", 1, 20,126)
