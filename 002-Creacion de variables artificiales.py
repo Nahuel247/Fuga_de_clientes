@@ -26,8 +26,8 @@ warnings.filterwarnings('once')
 data_artificial=data[["fuga","antiguedad","grande","pequeno"]]
 
 
-# Truquito para crear las variables de forma aútomatica: A continuación se crean de forma automatica la programación
-# de múltiples variables, están quedan guardads en el objeto "variables" y pueden ser ejecutadas con exec o impresas
+# Truquito para crear las variables de forma automática: A continuación se crean de forma automática la programación
+# de múltiples variables, están quedan guardadas en el objeto "variables" y pueden ser ejecutadas con exec o impresas
 # para dejarlas explicitas
 
 list_var=["monto_","satisfaccion_","canasta_","espera_"]
